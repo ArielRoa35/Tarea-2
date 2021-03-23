@@ -7,6 +7,7 @@ package ni.edu.uni.programacion.views.panels;
 
 import javax.swing.JLabel;
 import javax.swing.JTextArea;
+import javax.swing.JTextPane;
 
 /**
  *
@@ -33,8 +34,8 @@ public class PnlEditor extends javax.swing.JPanel {
         return lblWords;
     }
 
-    public JTextArea getTxtaEditor() {
-        return txtaEditor;
+    public JTextPane getTxtpEditor() {
+        return txtpEditor;
     }
 
     
@@ -52,8 +53,8 @@ public class PnlEditor extends javax.swing.JPanel {
         lblWords = new javax.swing.JLabel();
         lblLetters = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        txtaEditor = new javax.swing.JTextArea();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        txtpEditor = new javax.swing.JTextPane();
 
         setLayout(new java.awt.BorderLayout());
 
@@ -72,11 +73,9 @@ public class PnlEditor extends javax.swing.JPanel {
 
         jPanel2.setLayout(new java.awt.BorderLayout());
 
-        txtaEditor.setColumns(20);
-        txtaEditor.setRows(5);
-        jScrollPane1.setViewportView(txtaEditor);
+        jScrollPane2.setViewportView(txtpEditor);
 
-        jPanel2.add(jScrollPane1, java.awt.BorderLayout.CENTER);
+        jPanel2.add(jScrollPane2, java.awt.BorderLayout.CENTER);
 
         add(jPanel2, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
@@ -85,10 +84,10 @@ public class PnlEditor extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JLabel lblLetters;
     private javax.swing.JLabel lblLines;
     private javax.swing.JLabel lblWords;
-    private javax.swing.JTextArea txtaEditor;
+    private javax.swing.JTextPane txtpEditor;
     // End of variables declaration//GEN-END:variables
 }

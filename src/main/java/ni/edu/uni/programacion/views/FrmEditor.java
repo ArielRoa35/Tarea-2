@@ -5,7 +5,23 @@
  */
 package ni.edu.uni.programacion.views;
 
+
+import com.ozten.font.JFontChooser;
+import java.awt.Font;
+import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.Element;
+import javax.swing.text.MutableAttributeSet;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyledDocument;
+import ni.edu.uni.programacion.io.IOString;
 import ni.edu.uni.programacion.views.panels.PnlEditor;
 
 /**
@@ -14,11 +30,17 @@ import ni.edu.uni.programacion.views.panels.PnlEditor;
  */
 public class FrmEditor extends javax.swing.JFrame {
     private int countTab;
+    private FileNameExtensionFilter fileNameFileFilter;
+    private JFileChooser fileChooser;
+    private IOString ioString;
+    private JFontChooser fontChooser;
+    
     /**
      * Creates new form FrmEditor
      */
     public FrmEditor() {
         countTab = 1;
+        fileNameFileFilter = new FileNameExtensionFilter("txt file","txt");
         initComponents();
     }
 
@@ -34,6 +56,8 @@ public class FrmEditor extends javax.swing.JFrame {
         tbpContent = new javax.swing.JTabbedPane();
         jToolBar1 = new javax.swing.JToolBar();
         btnCloseTab = new javax.swing.JButton();
+        tglBold = new javax.swing.JToggleButton();
+        tglJustify = new javax.swing.JToggleButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         mnFile = new javax.swing.JMenu();
         mniNew = new javax.swing.JMenuItem();
@@ -42,6 +66,7 @@ public class FrmEditor extends javax.swing.JFrame {
         jSeparator1 = new javax.swing.JPopupMenu.Separator();
         mniExit = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
+        mniTextFormat = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Text Editor");
@@ -60,11 +85,28 @@ public class FrmEditor extends javax.swing.JFrame {
         });
         jToolBar1.add(btnCloseTab);
 
+        tglBold.setText("Bold");
+        tglBold.setFocusable(false);
+        tglBold.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        tglBold.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        tglBold.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tglBoldActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(tglBold);
+
+        tglJustify.setText("Justify");
+        tglJustify.setFocusable(false);
+        tglJustify.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        tglJustify.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jToolBar1.add(tglJustify);
+
         getContentPane().add(jToolBar1, java.awt.BorderLayout.PAGE_START);
 
         mnFile.setText("File");
 
-        mniNew.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        mniNew.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N, java.awt.event.InputEvent.CTRL_MASK));
         mniNew.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/new-file.png"))); // NOI18N
         mniNew.setText("New");
         mniNew.addActionListener(new java.awt.event.ActionListener() {
@@ -74,22 +116,45 @@ public class FrmEditor extends javax.swing.JFrame {
         });
         mnFile.add(mniNew);
 
-        mniOpen.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        mniOpen.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_MASK));
+        mniOpen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/Icono_1.png"))); // NOI18N
         mniOpen.setText("Open");
+        mniOpen.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mniOpenActionPerformed(evt);
+            }
+        });
         mnFile.add(mniOpen);
 
-        mniSaveAs.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.SHIFT_DOWN_MASK | java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        mniSaveAs.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.CTRL_MASK));
+        mniSaveAs.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icono_2.png"))); // NOI18N
         mniSaveAs.setText("Save As");
+        mniSaveAs.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mniSaveAsActionPerformed(evt);
+            }
+        });
         mnFile.add(mniSaveAs);
         mnFile.add(jSeparator1);
 
-        mniExit.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Q, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        mniExit.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Q, java.awt.event.InputEvent.CTRL_MASK));
+        mniExit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/Icono_3.png"))); // NOI18N
         mniExit.setText("Exit");
         mnFile.add(mniExit);
 
         jMenuBar1.add(mnFile);
 
         jMenu2.setText("Edit");
+
+        mniTextFormat.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icono_4.png"))); // NOI18N
+        mniTextFormat.setText("Text Format");
+        mniTextFormat.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mniTextFormatActionPerformed(evt);
+            }
+        });
+        jMenu2.add(mniTextFormat);
+
         jMenuBar1.add(jMenu2);
 
         setJMenuBar(jMenuBar1);
@@ -119,6 +184,121 @@ public class FrmEditor extends javax.swing.JFrame {
         tbpContent.remove(index);
     }//GEN-LAST:event_btnCloseTabActionPerformed
 
+    private void mniOpenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mniOpenActionPerformed
+        
+        int option = getFileChooser().showOpenDialog(this);
+        
+        if(option == JFileChooser.CANCEL_OPTION){
+            
+            return; 
+        }
+        
+        File file = getFileChooser().getSelectedFile();
+        ioString = new IOString(file);
+        
+        PnlEditor pnlEditor = new PnlEditor();
+        
+        try{
+            
+            pnlEditor.getTxtpEditor().setText(ioString.readString());
+        }catch(IOException ex){
+            Logger.getLogger(FrmEditor.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        tbpContent.addTab(file.getName(), pnlEditor);
+    }//GEN-LAST:event_mniOpenActionPerformed
+
+    private void mniTextFormatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mniTextFormatActionPerformed
+         
+    }//GEN-LAST:event_mniTextFormatActionPerformed
+
+    private void mniSaveAsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mniSaveAsActionPerformed
+        PnlEditor pnlEditor = (PnlEditor)tbpContent.getSelectedComponent();
+        int index = tbpContent.getSelectedIndex();
+        
+        if(pnlEditor == null){
+            
+            return;
+        }
+        
+        try{
+            
+            int option = getFileChooser().showSaveDialog(this);
+            
+            if(option == JFileChooser.CANCEL_OPTION){
+                
+                return;
+            }
+            
+            File file = getFileChooser().getSelectedFile();
+            ioString = new IOString(file);
+            
+            ioString.writeString(pnlEditor.getTxtpEditor().getText(), false);
+            tbpContent.setTitleAt(index, file.getName());
+        }catch(IOException ex){
+            Logger.getLogger(FrmEditor.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_mniSaveAsActionPerformed
+
+    private void tglBoldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tglBoldActionPerformed
+        PnlEditor pnlEditor = (PnlEditor) tbpContent.getSelectedComponent();
+        if (pnlEditor == null) {
+            return;
+        }
+
+        String text = pnlEditor.getTxtpEditor().getSelectedText();
+        if (text == null) {
+            return;
+        }
+
+        int start = pnlEditor.getTxtpEditor().getSelectionStart();
+        StyledDocument style = pnlEditor.getTxtpEditor().getStyledDocument();
+
+        Font font = new Font(Font.SERIF, tglBold.isSelected() ? Font.BOLD : Font.PLAIN, 12);        
+        pnlEditor.getTxtpEditor().setStyledDocument(getStyledDocuemt(font,style, start, text.length()));
+    
+    }//GEN-LAST:event_tglBoldActionPerformed
+
+    private JFileChooser getFileChooser(){
+        
+        if(fileChooser == null){
+            
+            fileChooser = new JFileChooser();
+            fileChooser.addChoosableFileFilter(fileNameFileFilter);
+            fileChooser.setFileFilter(fileNameFileFilter);
+        }
+        
+        return fileChooser;
+    }
+    
+    private StyledDocument getStyledDocuemt(Font font, StyledDocument style, int start, int length){
+        MutableAttributeSet attributeSet = getMutableAttributeSet(style, start);        
+        
+        attributeSet.addAttribute(StyleConstants.Bold, font.isBold());
+        attributeSet.addAttribute(StyleConstants.Italic, font.isItalic());
+        attributeSet.addAttribute(StyleConstants.Size, font.getSize());
+        attributeSet.addAttribute(StyleConstants.Family, font.getFamily());
+        attributeSet.addAttribute(StyleConstants.Alignment, StyleConstants.ALIGN_JUSTIFIED);
+        
+        style.setCharacterAttributes(start, length, attributeSet, true);
+        
+        return style;        
+    }
+    
+    private MutableAttributeSet getMutableAttributeSet(StyledDocument style, int start) {
+        Element element = style.getCharacterElement(start);
+        AttributeSet as = element.getAttributes();
+        
+        return new SimpleAttributeSet(as.copyAttributes());
+    }
+    
+    private JFontChooser getFontChooser() {
+        if (fontChooser == null) {
+            fontChooser = new JFontChooser();
+        }
+        return fontChooser;
+    }
+    
     /**
      * @param args the command line arguments
      */
@@ -165,6 +345,9 @@ public class FrmEditor extends javax.swing.JFrame {
     private javax.swing.JMenuItem mniNew;
     private javax.swing.JMenuItem mniOpen;
     private javax.swing.JMenuItem mniSaveAs;
+    private javax.swing.JMenuItem mniTextFormat;
     private javax.swing.JTabbedPane tbpContent;
+    private javax.swing.JToggleButton tglBold;
+    private javax.swing.JToggleButton tglJustify;
     // End of variables declaration//GEN-END:variables
 }
